@@ -7,6 +7,7 @@
   <title>百度网盘秒传链接转存</title>
   <meta name="description" content="百度网盘秒传链接在线转存/生成/转换，支持iOS/Android/PC and more">
   <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7692266966719684" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -87,6 +88,7 @@
   <script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.2/base64.js"></script>
   <script src="./common/Tools.js?version=1.4"></script>
   <script>
+    document.getElementById('link').value = location.pathname.slice(1)+decodeURI(location.hash);
     function inital() {
       $('#bdstoken').val(localStorage.getItem('Blink_bdstoken'));
       $('#savePath').val(localStorage.getItem('Blink_savePath'));
