@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>百度网盘秒传链接转存</title>
+  <meta name="description" content="百度网盘秒传链接在线转存/生成/转换，支持iOS/Android/PC and more">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7692266966719684" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+        <h1>百度网盘秒传链接转存</h1>
+        <p id="version">v1.4 mengzonefire version</p>
+        <p><b>请先阅读 <a href="./manual.html" target="_blank">使用教程</a></b><br></p>
+        <p><a href="./multisave.html">批量转存</a> <a href="./gen.html">秒传生成</a> <a href="./convert.html">秒传转换</a></p>
+      </div>
+      <div class="col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+        <p>1. 若转存显示 <b>{"errno":-6,"request_id":...}:</b></p>
+        <p>-> 请在此浏览器<b>打开或刷新</b><a href="https://pan.baidu.com/" target="_blank">度盘页面</a>(若未登陆请登陆)再重试</p>
+        <p>2. 若转存显示 <b>{"errno":-6} 或 {"errno":2,"request_id":...}:</b></p>
+        <p>-> 请填写<b>bdstoken</b>: <b><a href="https://pan.baidu.com/api/gettemplatevariable?fields=[%22bdstoken%22]"
+              target=_blank>登录度盘网页版后点我获取bdstoken</a></b></p>
+      </div>
+      <div id="body" class="col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+        <div id="api">
+          <p>秒传转存接口:
+            <label class="checkbox-inline" style="cursor:pointer; margin-left: 10px;">
+              <input type="radio" name="inlineRadioOptions" value="api2" checked> 备用接口
+            </label>
+            <label class="checkbox-inline" style="cursor:pointer; margin-left: 6px;">
+              <input type="radio" name="inlineRadioOptions" value="api1" disabled> <del>常规接口</del>(已失效)
+            </label>
+          </p>
+        </div>
+        <div>
+          <label for="bdstoken">bdstoken(可选)</label>
+          <p><input name="bdstoken" class="form-control" id="bdstoken" placeholder="32位字母数字, 转存出现上述报错时填写"></p>
+        </div>
+        <div>
+          <label for="savePath">转存路径</label>
+          <p><input name="savePath" class="form-control" id="savePath"
+              placeholder="不能含有字符\&quot;:*?&lt;&gt;|, 示例: /GTA5/, 留空保存在根目录"></p>
+        </div>
+        <div>
+          <label for="link">秒传链接</label>
+          <p><input name="link" id="link" class="form-control" placeholder="支持: 一键秒传链接/PanDL/游侠/标准码/PCS-GO"></p>
+        </div>
+        <p><button onclick="submitLink()" class="btn btn-primary">解析链接并转存</button></p>
+        <p><a data-bs-toggle="collapse" data-parent="#body" href="#collapseOne">手动输入文件属性</a></p>
+        <div id="collapseOne" class="panel-collapse collapse in">
+          <div>
+            <label>文件名</label>
+            <input name="path" class="form-control" id="path" placeholder="/数理化.doc">
+          </div>
+          <div>
+            <label>文件大小</label>
+            <input name="size" class="form-control" id="size" placeholder="1710630793">
+          </div>
+          <div>
+            <label>文件MD5</label>
+            <input name="md5" class="form-control" id="md5" placeholder="b3a90c47ea23b00aad062a09e33d6ce7">
+          </div>
+          <div>
+            <label>前256KB分片MD5</label>
+            <input name="md5s" class="form-control" id="md5s" placeholder="5b1cfe5072aabc737e6facce6d1c3be8">
+          </div>
+          <br>
+          <p><button onclick="submitData()" class="btn btn-primary">转存</button></p>
+        </div>
+      </div>
+      <div id="footer" class="col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+        <p>转存后弹窗显示的"errno"(错误码)即转存结果:<br>{"errno":0} 为转存成功, 其余转存失败的errno请参考文档: <a
+            href="https://mengzonefire.code.misakanet.cn/rapid-upload-userscript-doc/document/FAQ/错误代码(网页工具).html"
+            rel="noopener noreferrer" target="_blank">载点1</a> <a
+            href="https://xtsat.github.io/rapid-upload-userscript-doc/document/FAQ/错误代码(网页工具).html"
+            rel="noopener noreferrer" target="_blank">载点2</a><br><b>所有请求在用户端进行，服务器不保存任何数据</b>
+        </p>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.0/js/bootstrap.min.js"></script>
+  <script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.2/base64.js"></script>
+  <script src="./common/Tools.js?version=1.4"></script>
+  <script>
+    document.getElementById('link').value = location.pathname.slice(1)+decodeURI(location.hash);
+    function inital() {
+      $('#bdstoken').val(localStorage.getItem('Blink_bdstoken'));
+      $('#savePath').val(localStorage.getItem('Blink_savePath'));
+      $('#link').on('input', event => {
+        const result = parseQueryLink(event.target.value);
+        const linkNum = DuParser.parse(result).length
+        if (linkNum) {
+          if (linkNum > 1) {
+            alert('监测到多条秒传, 请使用页面上方的 "批量转存"');
+            event.target.value = ''
+            return;
+          }
+          event.target.value = result;
+        }
+      }); // 绑定输入框事件, 输入一键秒传后尝试转换为普通秒传
+      checkUpdate();
+    }
+
+    function submitLink() {
+      let savePath = $('#savePath').val();
+      let bdstoken = $('#bdstoken').val().trim();
+      if (!(checkBdstoken(bdstoken) && checkPath(savePath))) return;
+      if (savePath.charAt(savePath.length - 1) !== '/') savePath += '/'; // 补全路径结尾的 "/"
+      const api = $('#api input:radio:checked').val();
+      const data = DuParser.parse($('#link').val());
+      if (!data.length) {
+        alert('未检测到有效的秒传链接, 请参考页面上方的 "使用教程" -> "支持格式"');
+      } else if (data.length !== 1) {
+        alert('监测到多条秒传, 请使用页面上方的 "批量转存"');
+      } else {
+        const data0 = data[0];
+        if (api === 'api1' && data0.md5s && data0.size <= 21474836480) {
+          saveFile(
+            data0.md5,
+            data0.md5s,
+            data0.size,
+            savePath + data0.path.replace(illegalPathPattern, "_"),
+            bdstoken
+          );
+        } else if (api === 'api2' || !data0.md5s || data0.size > 21474836480) {
+          saveFile2(
+            data0.md5,
+            data0.size,
+            savePath + data0.path.replace(illegalPathPattern, "_"),
+            bdstoken
+          );
+        }
+      }
+    }
+
+    function submitData() {
+      let savePath = $('#savePath').val();
+      if (savePath.charAt(savePath.length - 1) !== '/') savePath += '/';
+      const api = $('#api input:radio:checked').val();
+      if (api === 'api1') {
+        saveFile(
+          $('#md5').val(),
+          $('#md5s').val(),
+          $('#size').val(),
+          savePath + $('#path').val().replace(illegalPathPattern, "_")
+        );
+      } else if (api === 'api2') {
+        saveFile2(
+          $('#md5').val(),
+          $('#size').val(),
+          savePath + $('#path').val().replace(illegalPathPattern, "_")
+        );
+      }
+    }
+
+    function main() {
+      Base64.extendString();
+      const result = parseQueryLink(window.location.href);
+      const linkNum = DuParser.parse(result).length
+      if (linkNum) {
+        if (linkNum > 1) window.location.href = './multisave.html#bdlink=' + result.toBase64()
+        else $('#link').val(result);
+      }
+      window.addEventListener('DOMContentLoaded', inital);
+    }
+
+    main()
+  </script>
+</body>
+
+</html>
