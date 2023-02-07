@@ -10,7 +10,7 @@ new Vue({
     },
     mounted() {
         if(this.quickmode){
-            this.currentStep = 5
+            this.currentStep = 4
             this.submitLink()
         }
     },
