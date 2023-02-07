@@ -30,21 +30,23 @@
           </div>
 
           <ul class="steps py-5">
-            <li class="step" :class="{'step-primary': currentStep >= 1}">
-              登录网盘
-            </li>
-            <li class="step" :class="{'step-primary': currentStep >= 2}">
-              获取token
-            </li>
-            <li class="step" :class="{'step-primary': currentStep >= 3}">
-              填写路径
-            </li>
-            <li class="step" :class="{'step-primary': currentStep >= 4}">
-              输入转存码
-            </li>
-            <li class="step" :class="{'step-primary': currentStep >= 5}">
-              查看结果
-            </li>
+           
+              <li class="step" :class="{'step-primary': currentStep >= 1}" @click="setCurrentStep(1)">
+                登录网盘
+              </li>
+              <li class="step" :class="{'step-primary': currentStep >= 2}" @click="setCurrentStep(2)">
+                获取token
+              </li>
+              <li class="step" :class="{'step-primary': currentStep >= 3}" @click="setCurrentStep(3)">
+                填写路径
+              </li>
+              <li class="step" :class="{'step-primary': currentStep >= 4}" @click="setCurrentStep(4)">
+                输入转存码
+              </li>
+              <li class="step" :class="{'step-primary': currentStep >= 5}" @click="setCurrentStep(5)">
+                查看结果
+              </li>
+          
           </ul>
 
           <div v-if="currentStep === 1 " class="gap-y-4 grid">

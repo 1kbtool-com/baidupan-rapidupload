@@ -15,6 +15,9 @@ new Vue({
         }
     },
     methods: {
+        setCurrentStep(step) {
+            this.currentStep = step;
+          },
         set_quickmode(value){
             localStorage.setItem("Quick_mode",value);
             this.quickmode = value
