@@ -99,7 +99,7 @@ function saveFile(md5, md5s, size, path, bdstoken) {
 
 function saveFile2(md5, size, path, bdstoken) {
   openPostWindow(
-    `https://pan.baidu.com/rest/2.0/xpan/file?method=create${
+    `https://pan.baidu.com/api/create${
       bdstoken ? "&bdstoken=" + bdstoken : ""
     }`,
     {
